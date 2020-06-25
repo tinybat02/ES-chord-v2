@@ -1,0 +1,21 @@
+{
+  "type": "panel",
+  "name": "ES Chord v2",
+  "id": "id-grafana-es-chord-diagram-v2",
+  "dataFormats": ["table"],
+  "info": {
+    "description": "ES Chord v2",
+    "author": {
+      "name": "Nam Le"
+    },
+    "keywords": [],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "6.3.x",
+    "plugins": []
+  }
+}
