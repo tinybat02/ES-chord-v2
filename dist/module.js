@@ -37718,7 +37718,7 @@ var processData = function processData(data) {
   data.map(function (elm) {
     var row = indexStore[elm.Source];
     storesList.map(function (store) {
-      if (elm[store] > 20) {
+      if (elm[store] > 30) {
         matrix[row][indexStore[store]] += elm[store];
         matrix[indexStore[store]][row] += elm[store] - 1;
       } // matrix[row][indexStore[store]] += elm[store];
@@ -37728,8 +37728,21 @@ var processData = function processData(data) {
 
     });
   });
-  console.log('matrix ', matrix);
-  console.log('keys ', storesList);
+
+  var _loop_1 = function _loop_1(i) {
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[i])) == 0) {
+      matrix.splice(i, 1);
+      matrix.map(function (row, idx) {
+        matrix[idx].splice(i, 1);
+      });
+      storesList.splice(i, 1);
+    }
+  };
+
+  for (var i = 0; i < matrix.length; i++) {
+    _loop_1(i);
+  }
+
   return {
     matrix: matrix,
     keys: storesList
