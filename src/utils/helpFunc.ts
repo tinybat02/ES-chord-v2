@@ -39,6 +39,8 @@ export const processData = (data: SingleElement[]) => {
       storesList.splice(i, 1);
     }
   }
+  console.log('matrxxx ', matrix);
+  console.log('stores ', storesList);
 
   return { matrix, keys: storesList };
 };
