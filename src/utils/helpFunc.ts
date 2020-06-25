@@ -29,19 +29,20 @@ export const processData = (data: SingleElement[]) => {
       // }
     });
   });
+  let count = 0;
 
   for (let i = 0; i < matrix.length; i++) {
     const max = Math.max(...matrix[i]);
     if (max == 0) {
-      console.log('Turn ', i, 'max ', max);
-      matrix.splice(i, 1);
-      matrix.map((row, idx) => {
-        matrix[idx].splice(i, 1);
-      });
-      storesList.splice(i, 1);
+      count++;
+      // matrix.splice(i, 1);
+      // matrix.map((row, idx) => {
+      //   matrix[idx].splice(i, 1);
+      // });
+      // storesList.splice(i, 1);
     }
-    console.log('-Turn ', i, 'max ', max);
   }
+  console.log('count ', count);
   console.log('matrxxx ', matrix);
   console.log('stores ', storesList);
 
