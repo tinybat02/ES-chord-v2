@@ -41,8 +41,5 @@ export const processData = (data: SingleElement[]) => {
     }
   }
 
-  console.log('matrxxx ', matrix);
-  console.log('stores ', storesList);
-
   return { matrix, keys: storesList };
 };

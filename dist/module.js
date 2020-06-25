@@ -37745,8 +37745,6 @@ var processData = function processData(data) {
     _loop_1(i);
   }
 
-  console.log('matrxxx ', matrix);
-  console.log('stores ', storesList);
   return {
     matrix: matrix,
     keys: storesList
