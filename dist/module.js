@@ -37728,21 +37728,23 @@ var processData = function processData(data) {
 
     });
   });
-  var count = 0;
 
-  for (var i = 0; i < matrix.length; i++) {
+  var _loop_1 = function _loop_1(i) {
     var max = Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[i]));
 
     if (max == 0) {
-      count++; // matrix.splice(i, 1);
-      // matrix.map((row, idx) => {
-      //   matrix[idx].splice(i, 1);
-      // });
-      // storesList.splice(i, 1);
+      matrix.splice(i, 1);
+      matrix.map(function (row, idx) {
+        matrix[idx].splice(i, 1);
+      });
+      storesList.splice(i, 1);
     }
+  };
+
+  for (var i = matrix.length - 1; i >= 0; i--) {
+    _loop_1(i);
   }
 
-  console.log('count ', count);
   console.log('matrxxx ', matrix);
   console.log('stores ', storesList);
   return {

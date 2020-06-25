@@ -29,20 +29,18 @@ export const processData = (data: SingleElement[]) => {
       // }
     });
   });
-  let count = 0;
 
-  for (let i = 0; i < matrix.length; i++) {
+  for (let i = matrix.length - 1; i >= 0; i--) {
     const max = Math.max(...matrix[i]);
     if (max == 0) {
-      count++;
-      // matrix.splice(i, 1);
-      // matrix.map((row, idx) => {
-      //   matrix[idx].splice(i, 1);
-      // });
-      // storesList.splice(i, 1);
+      matrix.splice(i, 1);
+      matrix.map((row, idx) => {
+        matrix[idx].splice(i, 1);
+      });
+      storesList.splice(i, 1);
     }
   }
-  console.log('count ', count);
+
   console.log('matrxxx ', matrix);
   console.log('stores ', storesList);
 
