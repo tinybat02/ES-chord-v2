@@ -31,13 +31,16 @@ export const processData = (data: SingleElement[]) => {
   });
 
   for (let i = 0; i < matrix.length; i++) {
-    if (Math.max(...matrix[i]) == 0) {
+    const max = Math.max(...matrix[i]);
+    if (max == 0) {
+      console.log('Turn ', i, 'max ', max);
       matrix.splice(i, 1);
       matrix.map((row, idx) => {
         matrix[idx].splice(i, 1);
       });
       storesList.splice(i, 1);
     }
+    console.log('-Turn ', i, 'max ', max);
   }
   console.log('matrxxx ', matrix);
   console.log('stores ', storesList);
