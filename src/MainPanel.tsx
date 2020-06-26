@@ -29,11 +29,15 @@ const RibbonTooltip = ({ ribbon }: { ribbon: Ribbon }) => (
     rows={[
       [
         <Chip key="chip" color={ribbon.source.color} />,
+        'From ',
         <strong key="id">{ribbon.source.id}</strong>,
-        '>>',
-        <Chip key="chip" color={ribbon.target.color} />,
-        <strong key="id">{ribbon.target.id}</strong>,
         ribbon.source.value,
+      ],
+      [
+        <Chip key="chip" color={ribbon.target.color} />,
+        'From ',
+        <strong key="id">{ribbon.target.id}</strong>,
+        ribbon.target.value,
       ],
     ]}
   />

@@ -21,7 +21,7 @@ export const processData = (data: SingleElement[]) => {
     storesList.map(store => {
       if (elm[store] > 30) {
         matrix[row][indexStore[store]] += elm[store];
-        matrix[indexStore[store]][row] += elm[store] - 1;
+        // matrix[indexStore[store]][row] += elm[store] - 1;
       }
       // matrix[row][indexStore[store]] += elm[store];
       // if (elm[store] > 0) {
@@ -30,16 +30,16 @@ export const processData = (data: SingleElement[]) => {
     });
   });
 
-  for (let i = matrix.length - 1; i >= 0; i--) {
-    const max = Math.max(...matrix[i]);
-    if (max == 0) {
-      matrix.splice(i, 1);
-      matrix.map((row, idx) => {
-        matrix[idx].splice(i, 1);
-      });
-      storesList.splice(i, 1);
-    }
-  }
+  // for (let i = matrix.length - 1; i >= 0; i--) {
+  //   const max = Math.max(...matrix[i]);
+  //   if (max == 0) {
+  //     matrix.splice(i, 1);
+  //     matrix.map((row, idx) => {
+  //       matrix[idx].splice(i, 1);
+  //     });
+  //     storesList.splice(i, 1);
+  //   }
+  // }
 
   return { matrix, keys: storesList };
 };

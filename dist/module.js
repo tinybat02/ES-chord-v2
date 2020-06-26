@@ -37478,14 +37478,14 @@ var RibbonTooltip = function RibbonTooltip(_a) {
     rows: [[react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_tooltip__WEBPACK_IMPORTED_MODULE_3__["Chip"], {
       key: "chip",
       color: ribbon.source.color
-    }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
+    }), 'From ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
       key: "id"
-    }, ribbon.source.id), '>>', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_tooltip__WEBPACK_IMPORTED_MODULE_3__["Chip"], {
+    }, ribbon.source.id), ribbon.source.value], [react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_tooltip__WEBPACK_IMPORTED_MODULE_3__["Chip"], {
       key: "chip",
       color: ribbon.target.color
-    }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
+    }), 'From ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
       key: "id"
-    }, ribbon.target.id), ribbon.source.value]]
+    }, ribbon.target.id), ribbon.target.value]]
   });
 };
 
@@ -37719,31 +37719,23 @@ var processData = function processData(data) {
     var row = indexStore[elm.Source];
     storesList.map(function (store) {
       if (elm[store] > 30) {
-        matrix[row][indexStore[store]] += elm[store];
-        matrix[indexStore[store]][row] += elm[store] - 1;
+        matrix[row][indexStore[store]] += elm[store]; // matrix[indexStore[store]][row] += elm[store] - 1;
       } // matrix[row][indexStore[store]] += elm[store];
       // if (elm[store] > 0) {
       //   matrix[indexStore[store]][row] += elm[store] - 1;
       // }
 
     });
-  });
-
-  var _loop_1 = function _loop_1(i) {
-    var max = Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[i]));
-
-    if (max == 0) {
-      matrix.splice(i, 1);
-      matrix.map(function (row, idx) {
-        matrix[idx].splice(i, 1);
-      });
-      storesList.splice(i, 1);
-    }
-  };
-
-  for (var i = matrix.length - 1; i >= 0; i--) {
-    _loop_1(i);
-  }
+  }); // for (let i = matrix.length - 1; i >= 0; i--) {
+  //   const max = Math.max(...matrix[i]);
+  //   if (max == 0) {
+  //     matrix.splice(i, 1);
+  //     matrix.map((row, idx) => {
+  //       matrix[idx].splice(i, 1);
+  //     });
+  //     storesList.splice(i, 1);
+  //   }
+  // }
 
   return {
     matrix: matrix,
