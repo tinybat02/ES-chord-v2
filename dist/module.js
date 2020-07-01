@@ -37423,30 +37423,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+
+ //@ts-ignore
 
 
+var MainEditor = function MainEditor(_a) {
+  var options = _a.options,
+      onOptionsChange = _a.onOptionsChange;
 
-var MainEditor =
-/** @class */
-function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MainEditor, _super);
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(options), 2),
+      input = _b[0],
+      setInput = _b[1];
 
-  function MainEditor() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
+  var handleChange = function handleChange(e) {
+    var value = Number(e.target.value);
 
-  MainEditor.prototype.render = function () {
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "section gf-form-group"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h5", {
-      className: "section-heading"
-    }, "Display"));
+    if (!isNaN(value) && value >= 0) {
+      setInput({
+        threshold: value
+      });
+    }
   };
 
-  return MainEditor;
-}(react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"]);
+  var handleSubmit = function handleSubmit() {
+    onOptionsChange(input);
+  };
 
-
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["PanelOptionsGroup"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "editor-row"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "section gf-form-group"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["FormField"], {
+    label: "Center Latitude",
+    labelWidth: 10,
+    inputWidth: 40,
+    type: "number",
+    value: input.threshold,
+    onChange: handleChange
+  }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    className: "btn btn-primary",
+    onClick: handleSubmit
+  }, "Submit"));
+};
 
 /***/ }),
 
@@ -37508,7 +37528,7 @@ function (_super) {
     if (this.props.data.series.length > 0) {
       var buffer = this.props.data.series[0].fields[0].values.buffer;
 
-      var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer),
+      var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
           matrix = _a.matrix,
           keys = _a.keys;
 
@@ -37531,9 +37551,26 @@ function (_super) {
 
       var buffer = this.props.data.series[0].fields[0].values.buffer;
 
-      var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer),
+      var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
           matrix = _a.matrix,
           keys = _a.keys;
+
+      this.setState({
+        matrix: matrix,
+        keys: keys
+      });
+    }
+
+    if (prevProps.options.threshold !== this.props.options.threshold) {
+      if (this.props.data.series.length == 0) {
+        return;
+      }
+
+      var buffer = this.props.data.series[0].fields[0].values.buffer;
+
+      var _b = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
+          matrix = _b.matrix,
+          keys = _b.keys;
 
       this.setState({
         matrix: matrix,
@@ -37669,7 +37706,9 @@ var plugin = new _grafana_ui__WEBPACK_IMPORTED_MODULE_0__["PanelPlugin"](_MainPa
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
-var defaults = {};
+var defaults = {
+  threshold: 0
+};
 
 /***/ }),
 
@@ -37685,7 +37724,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processData", function() { return processData; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 
-var processData = function processData(data) {
+var processData = function processData(data, threshold) {
   if (data.length == 0) {
     return {
       matrix: null,
@@ -37718,24 +37757,11 @@ var processData = function processData(data) {
   data.map(function (elm) {
     var row = indexStore[elm.Source];
     storesList.map(function (store) {
-      matrix[row][indexStore[store]] += elm[store]; // if (elm[store] > 30) {
-      // }
-      // matrix[row][indexStore[store]] += elm[store];
-      // if (elm[store] > 0) {
-      //   matrix[indexStore[store]][row] += elm[store] - 1;
-      // }
+      if (elm[store] > threshold) {
+        matrix[row][indexStore[store]] += elm[store];
+      }
     });
-  }); // for (let i = matrix.length - 1; i >= 0; i--) {
-  //   const max = Math.max(...matrix[i]);
-  //   if (max == 0) {
-  //     matrix.splice(i, 1);
-  //     matrix.map((row, idx) => {
-  //       matrix[idx].splice(i, 1);
-  //     });
-  //     storesList.splice(i, 1);
-  //   }
-  // }
-
+  });
   return {
     matrix: matrix,
     keys: storesList

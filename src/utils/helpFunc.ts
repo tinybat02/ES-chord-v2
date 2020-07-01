@@ -1,5 +1,5 @@
 import { SingleElement } from '../types';
-export const processData = (data: SingleElement[]) => {
+export const processData = (data: SingleElement[], threshold: number) => {
   if (data.length == 0) {
     return { matrix: null, keys: null };
   }
@@ -19,26 +19,11 @@ export const processData = (data: SingleElement[]) => {
   data.map(elm => {
     const row = indexStore[elm.Source];
     storesList.map(store => {
-      matrix[row][indexStore[store]] += elm[store];
-      // if (elm[store] > 30) {
-      // }
-      // matrix[row][indexStore[store]] += elm[store];
-      // if (elm[store] > 0) {
-      //   matrix[indexStore[store]][row] += elm[store] - 1;
-      // }
+      if (elm[store] > threshold) {
+        matrix[row][indexStore[store]] += elm[store];
+      }
     });
   });
-
-  // for (let i = matrix.length - 1; i >= 0; i--) {
-  //   const max = Math.max(...matrix[i]);
-  //   if (max == 0) {
-  //     matrix.splice(i, 1);
-  //     matrix.map((row, idx) => {
-  //       matrix[idx].splice(i, 1);
-  //     });
-  //     storesList.splice(i, 1);
-  //   }
-  // }
 
   return { matrix, keys: storesList };
 };

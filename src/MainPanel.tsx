@@ -52,7 +52,7 @@ export class MainPanel extends PureComponent<Props> {
   componentDidMount() {
     if (this.props.data.series.length > 0) {
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { matrix, keys } = processData(buffer);
+      const { matrix, keys } = processData(buffer, this.props.options.threshold);
       this.setState({ matrix, keys });
     }
   }
@@ -64,7 +64,17 @@ export class MainPanel extends PureComponent<Props> {
         return;
       }
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { matrix, keys } = processData(buffer);
+      const { matrix, keys } = processData(buffer, this.props.options.threshold);
+      this.setState({ matrix, keys });
+    }
+
+    if (prevProps.options.threshold !== this.props.options.threshold) {
+      if (this.props.data.series.length == 0) {
+        return;
+      }
+
+      const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
+      const { matrix, keys } = processData(buffer, this.props.options.threshold);
       this.setState({ matrix, keys });
     }
   }
