@@ -19,10 +19,9 @@ export const processData = (data: SingleElement[]) => {
   data.map(elm => {
     const row = indexStore[elm.Source];
     storesList.map(store => {
-      if (elm[store] > 30) {
-        matrix[row][indexStore[store]] += elm[store];
-        // matrix[indexStore[store]][row] += elm[store] - 1;
-      }
+      matrix[row][indexStore[store]] += elm[store];
+      // if (elm[store] > 30) {
+      // }
       // matrix[row][indexStore[store]] += elm[store];
       // if (elm[store] > 0) {
       //   matrix[indexStore[store]][row] += elm[store] - 1;

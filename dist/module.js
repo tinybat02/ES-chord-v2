@@ -37718,13 +37718,12 @@ var processData = function processData(data) {
   data.map(function (elm) {
     var row = indexStore[elm.Source];
     storesList.map(function (store) {
-      if (elm[store] > 30) {
-        matrix[row][indexStore[store]] += elm[store]; // matrix[indexStore[store]][row] += elm[store] - 1;
-      } // matrix[row][indexStore[store]] += elm[store];
+      matrix[row][indexStore[store]] += elm[store]; // if (elm[store] > 30) {
+      // }
+      // matrix[row][indexStore[store]] += elm[store];
       // if (elm[store] > 0) {
       //   matrix[indexStore[store]][row] += elm[store] - 1;
       // }
-
     });
   }); // for (let i = matrix.length - 1; i >= 0; i--) {
   //   const max = Math.max(...matrix[i]);
