@@ -37433,22 +37433,28 @@ var MainEditor = function MainEditor(_a) {
   var options = _a.options,
       onOptionsChange = _a.onOptionsChange;
 
-  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(options), 2),
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(options.threshold || ''), 2),
       input = _b[0],
       setInput = _b[1];
 
   var handleChange = function handleChange(e) {
-    var value = Number(e.target.value);
-
-    if (!isNaN(value) && value >= 0) {
-      setInput({
-        threshold: value
-      });
+    if (e.target.value == '') {
+      setInput('');
+    } else if (parseInt(e.target.value) >= 0) {
+      setInput(e.target.value);
     }
   };
 
   var handleSubmit = function handleSubmit() {
-    onOptionsChange(input);
+    var value = input;
+
+    if (value == '' || isNaN(parseInt(value))) {
+      setInput(0);
+    } else {
+      onOptionsChange({
+        threshold: parseInt(value)
+      });
+    }
   };
 
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["PanelOptionsGroup"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -37456,11 +37462,11 @@ var MainEditor = function MainEditor(_a) {
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "section gf-form-group"
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["FormField"], {
-    label: "Center Latitude",
+    label: "Lower Threshold",
     labelWidth: 10,
     inputWidth: 40,
     type: "number",
-    value: input.threshold,
+    value: input,
     onChange: handleChange
   }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
     className: "btn btn-primary",
