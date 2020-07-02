@@ -37647,27 +37647,7 @@ function (_super) {
       ribbonTooltip: RibbonTooltip,
       animate: true,
       motionStiffness: 90,
-      motionDamping: 7,
-      legends: [{
-        anchor: 'bottom-right',
-        direction: 'column',
-        justify: false,
-        translateX: 30,
-        translateY: 70,
-        itemWidth: 80,
-        itemHeight: 14,
-        itemsSpacing: 0,
-        itemTextColor: '#999',
-        itemDirection: 'left-to-right',
-        symbolSize: 12,
-        symbolShape: 'circle',
-        effects: [{
-          on: 'hover',
-          style: {
-            itemTextColor: '#000'
-          }
-        }]
-      }]
+      motionDamping: 7
     }));
   };
 
