@@ -37720,19 +37720,11 @@ var processData = function processData(data, threshold) {
 
   var storesList = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(new Set(data.map(function (elm) {
     return elm.Source;
-  })));
+  }))); // const columnStoresLength = Object.keys(data[0]).length - 5;
+  // if (storesList.length !== columnStoresLength) {
+  //   return { matrix: null, keys: null };
+  // }
 
-  var columnStoresLength = Object.keys(data[0]).length - 5;
-
-  if (storesList.length !== columnStoresLength) {
-    console.log('stop ');
-    console.log(storesList.length, storesList);
-    console.log(Object.keys(data[0]).length - 5, data[0]);
-    return {
-      matrix: null,
-      keys: null
-    };
-  }
 
   var indexStore = {};
   storesList.map(function (store) {
@@ -37746,7 +37738,7 @@ var processData = function processData(data, threshold) {
   data.map(function (elm) {
     var row = indexStore[elm.Source];
     storesList.map(function (store) {
-      if (elm[store] > threshold) {
+      if (elm[store] && elm[store] > threshold) {
         matrix[row][indexStore[store]] += elm[store];
       }
     });

@@ -6,13 +6,10 @@ export const processData = (data: SingleElement[], threshold: number) => {
 
   const storesList = [...new Set(data.map(elm => elm.Source))];
 
-  const columnStoresLength = Object.keys(data[0]).length - 5;
-  if (storesList.length !== columnStoresLength) {
-    console.log('stop ');
-    console.log(storesList.length, storesList);
-    console.log(Object.keys(data[0]).length - 5, data[0]);
-    return { matrix: null, keys: null };
-  }
+  // const columnStoresLength = Object.keys(data[0]).length - 5;
+  // if (storesList.length !== columnStoresLength) {
+  //   return { matrix: null, keys: null };
+  // }
 
   const indexStore: { [key: string]: number } = {};
   storesList.map(store => (indexStore[store] = storesList.indexOf(store)));
@@ -22,7 +19,7 @@ export const processData = (data: SingleElement[], threshold: number) => {
   data.map(elm => {
     const row = indexStore[elm.Source];
     storesList.map(store => {
-      if (elm[store] > threshold) {
+      if (elm[store] && elm[store] > threshold) {
         matrix[row][indexStore[store]] += elm[store];
       }
     });
