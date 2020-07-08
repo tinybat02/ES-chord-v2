@@ -37725,6 +37725,9 @@ var processData = function processData(data, threshold) {
   var columnStoresLength = Object.keys(data[0]).length - 5;
 
   if (storesList.length !== columnStoresLength) {
+    console.log('stop ');
+    console.log(storesList.length, storesList.length);
+    console.log(Object.keys(data[0]).length - 5, data[0]);
     return {
       matrix: null,
       keys: null
