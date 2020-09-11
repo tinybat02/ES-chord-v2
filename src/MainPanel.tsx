@@ -9,6 +9,7 @@ interface Props extends PanelProps<PanelOptions> {}
 interface State {
   matrix: Array<Array<number>> | null;
   keys: Array<string> | null;
+  is_empty: boolean;
 }
 
 interface Ribbon {
@@ -47,25 +48,26 @@ export class MainPanel extends PureComponent<Props> {
   state: State = {
     matrix: null,
     keys: null,
+    is_empty: false,
   };
 
   componentDidMount() {
     if (this.props.data.series.length > 0) {
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { matrix, keys } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys });
+      const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
+      this.setState({ matrix, keys, is_empty });
     }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.data.series !== this.props.data.series) {
       if (this.props.data.series.length == 0) {
-        this.setState({ matrix: null, keys: null });
+        this.setState({ matrix: null, keys: null, is_empty: false });
         return;
       }
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { matrix, keys } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys });
+      const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
+      this.setState({ matrix, keys, is_empty });
     }
 
     if (prevProps.options.threshold !== this.props.options.threshold) {
@@ -74,17 +76,21 @@ export class MainPanel extends PureComponent<Props> {
       }
 
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { matrix, keys } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys });
+      const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
+      this.setState({ matrix, keys, is_empty });
     }
   }
 
   render() {
     const { width, height } = this.props;
-    const { matrix, keys } = this.state;
+    const { matrix, keys, is_empty } = this.state;
 
     if (!matrix || !keys) {
-      return <div />;
+      return <div> No Data </div>;
+    }
+
+    if (matrix && is_empty) {
+      return <div>No Transitions</div>;
     }
 
     return (

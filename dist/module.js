@@ -37531,7 +37531,8 @@ function (_super) {
 
     _this.state = {
       matrix: null,
-      keys: null
+      keys: null,
+      is_empty: false
     };
     return _this;
   }
@@ -37542,11 +37543,13 @@ function (_super) {
 
       var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
           matrix = _a.matrix,
-          keys = _a.keys;
+          keys = _a.keys,
+          is_empty = _a.is_empty;
 
       this.setState({
         matrix: matrix,
-        keys: keys
+        keys: keys,
+        is_empty: is_empty
       });
     }
   };
@@ -37556,7 +37559,8 @@ function (_super) {
       if (this.props.data.series.length == 0) {
         this.setState({
           matrix: null,
-          keys: null
+          keys: null,
+          is_empty: false
         });
         return;
       }
@@ -37565,11 +37569,13 @@ function (_super) {
 
       var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
           matrix = _a.matrix,
-          keys = _a.keys;
+          keys = _a.keys,
+          is_empty = _a.is_empty;
 
       this.setState({
         matrix: matrix,
-        keys: keys
+        keys: keys,
+        is_empty: is_empty
       });
     }
 
@@ -37582,11 +37588,13 @@ function (_super) {
 
       var _b = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
           matrix = _b.matrix,
-          keys = _b.keys;
+          keys = _b.keys,
+          is_empty = _b.is_empty;
 
       this.setState({
         matrix: matrix,
-        keys: keys
+        keys: keys,
+        is_empty: is_empty
       });
     }
   };
@@ -37597,10 +37605,15 @@ function (_super) {
         height = _a.height;
     var _b = this.state,
         matrix = _b.matrix,
-        keys = _b.keys;
+        keys = _b.keys,
+        is_empty = _b.is_empty;
 
     if (!matrix || !keys) {
-      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null);
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, " No Data ");
+    }
+
+    if (matrix && is_empty) {
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "No Transitions");
     }
 
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -37716,6 +37729,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processData", function() { return processData; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 
+
+var is_empty_matrix = function is_empty_matrix(matrix) {
+  for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
+    for (var idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
+      if (matrix[idx_row][idx_col] > 0) return false;
+    }
+  }
+
+  return true;
+};
+
 var processData = function processData(data, threshold) {
   if (data.length == 0) {
     return {
@@ -37756,9 +37780,11 @@ var processData = function processData(data, threshold) {
       }
     });
   });
+  var is_empty = is_empty_matrix(matrix);
   return {
     matrix: matrix,
-    keys: storesList
+    keys: storesList,
+    is_empty: is_empty
   };
 };
 

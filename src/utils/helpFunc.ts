@@ -1,4 +1,14 @@
 import { SingleElement } from '../types';
+
+const is_empty_matrix = (matrix: number[][]) => {
+  for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
+    for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
+      if (matrix[idx_row][idx_col] > 0) return false;
+    }
+  }
+  return true;
+};
+
 export const processData = (data: SingleElement[], threshold: number) => {
   if (data.length == 0) {
     return { matrix: null, keys: null };
@@ -33,5 +43,7 @@ export const processData = (data: SingleElement[], threshold: number) => {
     });
   });
 
-  return { matrix, keys: storesList };
+  const is_empty = is_empty_matrix(matrix);
+
+  return { matrix, keys: storesList, is_empty };
 };
