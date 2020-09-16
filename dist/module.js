@@ -37728,17 +37728,14 @@ var defaults = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processData", function() { return processData; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-
-
-var is_empty_matrix = function is_empty_matrix(matrix) {
-  for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
-    for (var idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-      if (matrix[idx_row][idx_col] > 0) return false;
-    }
-  }
-
-  return true;
-};
+ // const is_empty_matrix = (matrix: number[][]) => {
+//   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
+//     for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
+//       if (matrix[idx_row][idx_col] > 0) return false;
+//     }
+//   }
+//   return true;
+// };
 
 var processData = function processData(data, threshold) {
   if (data.length == 0) {
@@ -37750,11 +37747,7 @@ var processData = function processData(data, threshold) {
 
   var storesList = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(new Set(data.map(function (elm) {
     return elm.Source;
-  }))); // const columnStoresLength = Object.keys(data[0]).length - 5;
-  // if (storesList.length !== columnStoresLength) {
-  //   return { matrix: null, keys: null };
-  // }
-
+  })));
 
   var indexStore = {};
   storesList.map(function (store) {
@@ -37773,14 +37766,45 @@ var processData = function processData(data, threshold) {
       }
     });
   });
-  matrix.map(function (row, idx_row) {
-    row.map(function (col, idx_col) {
-      if (matrix[idx_row][idx_col] < threshold) {
-        matrix[idx_row][idx_col] = 0;
+  var eliminateByRow = [];
+  var nonEliminateByColObj = {};
+
+  for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) <= threshold) {
+      eliminateByRow.push(idx_row);
+      continue;
+    }
+
+    for (var idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
+      if (matrix[idx_row][idx_col] > threshold && !nonEliminateByColObj[idx_col]) {
+        nonEliminateByColObj[idx_col] = true;
       }
-    });
+    }
+  }
+
+  var nonELiminateArray = Object.keys(nonEliminateByColObj).map(Number);
+  var eliminateArray = eliminateByRow.filter(function (value) {
+    return !nonELiminateArray.includes(value);
   });
-  var is_empty = is_empty_matrix(matrix);
+  eliminateArray.sort(function (a, b) {
+    return b - a;
+  });
+  eliminateArray.map(function (elm) {
+    storesList.splice(elm, 1);
+    matrix.splice(elm, 1);
+  });
+
+  var _loop_1 = function _loop_1(row) {
+    eliminateArray.map(function (elm) {
+      matrix[row].splice(elm, 1);
+    });
+  };
+
+  for (var row = 0; row < matrix.length; row++) {
+    _loop_1(row);
+  }
+
+  var is_empty = matrix.length == 0;
   return {
     matrix: matrix,
     keys: storesList,
