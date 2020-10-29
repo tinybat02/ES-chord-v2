@@ -37532,8 +37532,37 @@ function (_super) {
     _this.state = {
       matrix: null,
       keys: null,
-      is_empty: false
+      is_empty: false,
+      threshold: _this.props.options.threshold.toString() || ''
     };
+
+    _this.onChangeTheshold = function (e) {
+      if (e.target.value == '') {
+        _this.setState({
+          threshold: ''
+        });
+      } else if (parseInt(e.target.value) >= 0) {
+        _this.setState({
+          threshold: e.target.value
+        });
+      }
+    };
+
+    _this.onSubmitThreshold = function (e) {
+      e.preventDefault();
+      var threshold = _this.state.threshold;
+
+      if (threshold == '' || isNaN(parseInt(threshold))) {
+        _this.setState({
+          threshold: '0'
+        });
+      } else {
+        _this.props.onOptionsChange({
+          threshold: parseInt(threshold)
+        });
+      }
+    };
+
     return _this;
   }
 
@@ -37542,14 +37571,16 @@ function (_super) {
       var buffer = this.props.data.series[0].fields[0].values.buffer;
 
       var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
-          matrix = _a.matrix,
-          keys = _a.keys,
-          is_empty = _a.is_empty;
+          matrix_1 = _a.matrix,
+          keys_1 = _a.keys,
+          is_empty_1 = _a.is_empty;
 
-      this.setState({
-        matrix: matrix,
-        keys: keys,
-        is_empty: is_empty
+      this.setState(function (prevState) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
+          matrix: matrix_1,
+          keys: keys_1,
+          is_empty: is_empty_1
+        });
       });
     }
   };
@@ -37557,10 +37588,12 @@ function (_super) {
   MainPanel.prototype.componentDidUpdate = function (prevProps) {
     if (prevProps.data.series !== this.props.data.series) {
       if (this.props.data.series.length == 0) {
-        this.setState({
-          matrix: null,
-          keys: null,
-          is_empty: false
+        this.setState(function (prevState) {
+          return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
+            matrix: null,
+            keys: null,
+            is_empty: false
+          });
         });
         return;
       }
@@ -37568,14 +37601,16 @@ function (_super) {
       var buffer = this.props.data.series[0].fields[0].values.buffer;
 
       var _a = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
-          matrix = _a.matrix,
-          keys = _a.keys,
-          is_empty = _a.is_empty;
+          matrix_2 = _a.matrix,
+          keys_2 = _a.keys,
+          is_empty_2 = _a.is_empty;
 
-      this.setState({
-        matrix: matrix,
-        keys: keys,
-        is_empty: is_empty
+      this.setState(function (prevState) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
+          matrix: matrix_2,
+          keys: keys_2,
+          is_empty: is_empty_2
+        });
       });
     }
 
@@ -37587,14 +37622,16 @@ function (_super) {
       var buffer = this.props.data.series[0].fields[0].values.buffer;
 
       var _b = Object(_utils_helpFunc__WEBPACK_IMPORTED_MODULE_4__["processData"])(buffer, this.props.options.threshold),
-          matrix = _b.matrix,
-          keys = _b.keys,
-          is_empty = _b.is_empty;
+          matrix_3 = _b.matrix,
+          keys_3 = _b.keys,
+          is_empty_3 = _b.is_empty;
 
-      this.setState({
-        matrix: matrix,
-        keys: keys,
-        is_empty: is_empty
+      this.setState(function (prevState) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
+          matrix: matrix_3,
+          keys: keys_3,
+          is_empty: is_empty_3
+        });
       });
     }
   };
@@ -37606,14 +37643,33 @@ function (_super) {
     var _b = this.state,
         matrix = _b.matrix,
         keys = _b.keys,
-        is_empty = _b.is_empty;
+        is_empty = _b.is_empty,
+        threshold = _b.threshold;
 
     if (!matrix || !keys) {
-      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, " No Data ");
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, " No Data");
     }
 
     if (matrix && is_empty) {
-      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "No Transitions");
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "No Transitions", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        style: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Threshold"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
+        onSubmit: this.onSubmitThreshold
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+        style: {
+          marginLeft: 10,
+          padding: 5,
+          border: '1px solid #777',
+          borderRadius: 3,
+          width: 50
+        },
+        onChange: this.onChangeTheshold,
+        value: threshold
+      }))));
     }
 
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -37621,7 +37677,25 @@ function (_super) {
         width: width,
         height: height
       }
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_chord__WEBPACK_IMPORTED_MODULE_2__["ResponsiveChord"], {
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      style: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Threshold"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
+      onSubmit: this.onSubmitThreshold
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      style: {
+        marginLeft: 10,
+        padding: 5,
+        border: '1px solid #777',
+        borderRadius: 3,
+        width: 50
+      },
+      onChange: this.onChangeTheshold,
+      value: threshold
+    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_chord__WEBPACK_IMPORTED_MODULE_2__["ResponsiveChord"], {
       matrix: matrix,
       keys: keys,
       margin: {

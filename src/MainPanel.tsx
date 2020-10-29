@@ -10,6 +10,7 @@ interface State {
   matrix: Array<Array<number>> | null;
   keys: Array<string> | null;
   is_empty: boolean;
+  threshold: string;
 }
 
 interface Ribbon {
@@ -49,25 +50,26 @@ export class MainPanel extends PureComponent<Props> {
     matrix: null,
     keys: null,
     is_empty: false,
+    threshold: this.props.options.threshold.toString() || '',
   };
 
   componentDidMount() {
     if (this.props.data.series.length > 0) {
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
       const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys, is_empty });
+      this.setState(prevState => ({ ...prevState, matrix, keys, is_empty }));
     }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.data.series !== this.props.data.series) {
       if (this.props.data.series.length == 0) {
-        this.setState({ matrix: null, keys: null, is_empty: false });
+        this.setState(prevState => ({ ...prevState, matrix: null, keys: null, is_empty: false }));
         return;
       }
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
       const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys, is_empty });
+      this.setState(prevState => ({ ...prevState, matrix, keys, is_empty }));
     }
 
     if (prevProps.options.threshold !== this.props.options.threshold) {
@@ -77,20 +79,52 @@ export class MainPanel extends PureComponent<Props> {
 
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
       const { matrix, keys, is_empty } = processData(buffer, this.props.options.threshold);
-      this.setState({ matrix, keys, is_empty });
+      this.setState(prevState => ({ ...prevState, matrix, keys, is_empty }));
     }
   }
 
+  onChangeTheshold = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value == '') {
+      this.setState({ threshold: '' });
+    } else if (parseInt(e.target.value) >= 0) {
+      this.setState({ threshold: e.target.value });
+    }
+  };
+
+  onSubmitThreshold = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { threshold } = this.state;
+    if (threshold == '' || isNaN(parseInt(threshold))) {
+      this.setState({ threshold: '0' });
+    } else {
+      this.props.onOptionsChange({ threshold: parseInt(threshold) });
+    }
+  };
+
   render() {
     const { width, height } = this.props;
-    const { matrix, keys, is_empty } = this.state;
+    const { matrix, keys, is_empty, threshold } = this.state;
 
     if (!matrix || !keys) {
-      return <div> No Data </div>;
+      return <div> No Data</div>;
     }
 
     if (matrix && is_empty) {
-      return <div>No Transitions</div>;
+      return (
+        <div>
+          No Transitions
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <span>Threshold</span>
+            <form onSubmit={this.onSubmitThreshold}>
+              <input
+                style={{ marginLeft: 10, padding: 5, border: '1px solid #777', borderRadius: 3, width: 50 }}
+                onChange={this.onChangeTheshold}
+                value={threshold}
+              />
+            </form>
+          </div>
+        </div>
+      );
     }
 
     return (
@@ -100,6 +134,16 @@ export class MainPanel extends PureComponent<Props> {
           height,
         }}
       >
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <span>Threshold</span>
+          <form onSubmit={this.onSubmitThreshold}>
+            <input
+              style={{ marginLeft: 10, padding: 5, border: '1px solid #777', borderRadius: 3, width: 50 }}
+              onChange={this.onChangeTheshold}
+              value={threshold}
+            />
+          </form>
+        </div>
         <ResponsiveChord
           matrix={matrix}
           keys={keys}
