@@ -12,11 +12,12 @@
   "license": "MIT",
   "devDependencies": {
     "@grafana/data": "next",
-    "@grafana/toolkit": "next",
+    "@grafana/toolkit": "^7.3.0",
     "@grafana/ui": "next"
   },
   "dependencies": {
-    "@nivo/chord": "^0.62.0",
-    "@nivo/tooltip": "^0.62.0"
+    "@nivo/chord": "^0.63.1",
+    "@nivo/tooltip": "^0.63.0",
+    "react-compound-slider": "^3.1.0"
   }
 }

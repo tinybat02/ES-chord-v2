@@ -4,13 +4,14 @@ import { PanelOptions, Buffer } from 'types';
 import { ResponsiveChord } from '@nivo/chord';
 import { TableTooltip, Chip } from '@nivo/tooltip';
 import { processData } from './utils/helpFunc';
+import { CustomSlider } from './components/CustomSlider';
 
 interface Props extends PanelProps<PanelOptions> {}
 interface State {
   matrix: Array<Array<number>> | null;
   keys: Array<string> | null;
   is_empty: boolean;
-  threshold: string;
+  threshold: number;
 }
 
 interface Ribbon {
@@ -50,7 +51,7 @@ export class MainPanel extends PureComponent<Props> {
     matrix: null,
     keys: null,
     is_empty: false,
-    threshold: this.props.options.threshold.toString() || '',
+    threshold: this.props.options.threshold,
   };
 
   componentDidMount() {
@@ -83,22 +84,12 @@ export class MainPanel extends PureComponent<Props> {
     }
   }
 
-  onChangeTheshold = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value == '') {
-      this.setState({ threshold: '' });
-    } else if (parseInt(e.target.value) >= 0) {
-      this.setState({ threshold: e.target.value });
-    }
+  onSliding = (value: number) => {
+    this.setState({ threshold: value });
   };
 
-  onSubmitThreshold = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { threshold } = this.state;
-    if (threshold == '' || isNaN(parseInt(threshold))) {
-      this.setState({ threshold: '0' });
-    } else {
-      this.props.onOptionsChange({ threshold: parseInt(threshold) });
-    }
+  onSlider = (value: number) => {
+    this.props.onOptionsChange({ threshold: value });
   };
 
   render() {
@@ -111,18 +102,14 @@ export class MainPanel extends PureComponent<Props> {
 
     if (matrix && is_empty) {
       return (
-        <div>
+        <div style={{ textAlign: 'center' }}>
           No Transitions
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <span>Threshold</span>
-            <form onSubmit={this.onSubmitThreshold}>
-              <input
-                style={{ marginLeft: 10, padding: 5, border: '1px solid #777', borderRadius: 3, width: 50 }}
-                onChange={this.onChangeTheshold}
-                value={threshold}
-              />
-            </form>
-          </div>
+          <CustomSlider
+            initialValue={this.props.options.threshold}
+            onSliding={this.onSliding}
+            onSlider={this.onSlider}
+          />
+          <span style={{ fontWeight: 'bold' }}>Threshold : {threshold}</span>
         </div>
       );
     }
@@ -132,73 +119,44 @@ export class MainPanel extends PureComponent<Props> {
         style={{
           width,
           height,
+          textAlign: 'center',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <span>Threshold</span>
-          <form onSubmit={this.onSubmitThreshold}>
-            <input
-              style={{ marginLeft: 10, padding: 5, border: '1px solid #777', borderRadius: 3, width: 50 }}
-              onChange={this.onChangeTheshold}
-              value={threshold}
-            />
-          </form>
+        <CustomSlider initialValue={this.props.options.threshold} onSliding={this.onSliding} onSlider={this.onSlider} />
+        <span style={{ fontWeight: 'bold', marginBottom: 5 }}>Threshold : {threshold}</span>
+        <div style={{ width: '100%', height: height - 45 }}>
+          <ResponsiveChord
+            matrix={matrix}
+            keys={keys}
+            margin={{ top: 70, right: 60, bottom: 90, left: 60 }}
+            valueFormat=".2f"
+            padAngle={0.08}
+            innerRadiusRatio={0.96}
+            innerRadiusOffset={0.02}
+            arcOpacity={1}
+            arcBorderWidth={1}
+            arcBorderColor={{ from: 'color', modifiers: [['darker', 0.4]] }}
+            ribbonOpacity={0.5}
+            ribbonBorderWidth={1}
+            // @ts-ignore
+            ribbonBorderColor={{ from: 'color', modifiers: [['darker', 0.4]] }}
+            enableLabel={true}
+            label="id"
+            labelOffset={12}
+            labelRotation={-90}
+            labelTextColor={{ from: 'color', modifiers: [['darker', 1]] }}
+            colors={{ scheme: 'nivo' }}
+            isInteractive={true}
+            arcHoverOpacity={1}
+            arcHoverOthersOpacity={0.25}
+            ribbonHoverOpacity={0.6}
+            ribbonHoverOthersOpacity={0}
+            ribbonTooltip={RibbonTooltip}
+            animate={true}
+            motionStiffness={90}
+            motionDamping={7}
+          />
         </div>
-        <ResponsiveChord
-          matrix={matrix}
-          keys={keys}
-          margin={{ top: 70, right: 60, bottom: 90, left: 60 }}
-          valueFormat=".2f"
-          padAngle={0.08}
-          innerRadiusRatio={0.96}
-          innerRadiusOffset={0.02}
-          arcOpacity={1}
-          arcBorderWidth={1}
-          arcBorderColor={{ from: 'color', modifiers: [['darker', 0.4]] }}
-          ribbonOpacity={0.5}
-          ribbonBorderWidth={1}
-          // @ts-ignore
-          ribbonBorderColor={{ from: 'color', modifiers: [['darker', 0.4]] }}
-          enableLabel={true}
-          label="id"
-          labelOffset={12}
-          labelRotation={-90}
-          labelTextColor={{ from: 'color', modifiers: [['darker', 1]] }}
-          colors={{ scheme: 'nivo' }}
-          isInteractive={true}
-          arcHoverOpacity={1}
-          arcHoverOthersOpacity={0.25}
-          ribbonHoverOpacity={0.6}
-          ribbonHoverOthersOpacity={0}
-          ribbonTooltip={RibbonTooltip}
-          animate={true}
-          motionStiffness={90}
-          motionDamping={7}
-          // legends={[
-          //   {
-          //     anchor: 'bottom-right',
-          //     direction: 'column',
-          //     justify: false,
-          //     translateX: 30,
-          //     translateY: 70,
-          //     itemWidth: 80,
-          //     itemHeight: 14,
-          //     itemsSpacing: 0,
-          //     itemTextColor: '#999',
-          //     itemDirection: 'left-to-right',
-          //     symbolSize: 12,
-          //     symbolShape: 'circle',
-          //     effects: [
-          //       {
-          //         on: 'hover',
-          //         style: {
-          //           itemTextColor: '#000',
-          //         },
-          //       },
-          //     ],
-          //   },
-          // ]}
-        />
       </div>
     );
   }
