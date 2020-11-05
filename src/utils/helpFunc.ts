@@ -9,7 +9,7 @@ import { SingleElement } from '../types';
 //   return true;
 // };
 
-export const processData = (data: SingleElement[], threshold: number) => {
+export const processData = (data: SingleElement[], threshold: number[]) => {
   if (data.length == 0) {
     return { matrix: null, keys: null };
   }
@@ -34,12 +34,16 @@ export const processData = (data: SingleElement[], threshold: number) => {
   const nonEliminateByColObj: { [key: number]: boolean } = {};
 
   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
-    if (Math.max(...matrix[idx_row]) <= threshold) {
+    if (Math.max(...matrix[idx_row]) < threshold[0] || Math.max(...matrix[idx_row]) > threshold[1]) {
       eliminateByRow.push(idx_row);
       continue;
     }
     for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-      if (matrix[idx_row][idx_col] > threshold && !nonEliminateByColObj[idx_col]) {
+      if (
+        matrix[idx_row][idx_col] >= threshold[0] &&
+        matrix[idx_row][idx_col] <= threshold[1] &&
+        !nonEliminateByColObj[idx_col]
+      ) {
         nonEliminateByColObj[idx_col] = true;
       }
     }

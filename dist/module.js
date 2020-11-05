@@ -44917,27 +44917,33 @@ var MainEditor = function MainEditor(_a) {
   var options = _a.options,
       onOptionsChange = _a.onOptionsChange;
 
-  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(options.threshold || ''), 2),
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])({
+    under: options.domain[0],
+    upper: options.domain[1]
+  }), 2),
       input = _b[0],
       setInput = _b[1];
 
   var handleChange = function handleChange(e) {
+    var _a, _b;
+
     if (e.target.value == '') {
-      setInput('');
+      setInput(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, input), (_a = {}, _a[e.target.name] = '', _a)));
     } else if (parseInt(e.target.value) >= 0) {
-      setInput(e.target.value);
+      setInput(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, input), (_b = {}, _b[e.target.name] = e.target.value, _b)));
     }
   };
 
   var handleSubmit = function handleSubmit() {
-    var value = input;
-
-    if (value == '' || isNaN(parseInt(value))) {
-      setInput(0);
-    } else {
-      onOptionsChange({
-        threshold: parseInt(value)
+    if (input.under.toString() == '' || isNaN(parseInt(input.under.toString())) || input.upper.toString() == '' || isNaN(parseInt(input.upper.toString()))) {
+      setInput({
+        under: options.domain[0],
+        upper: options.domain[1]
       });
+    } else {
+      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
+        domain: [parseInt(input.under.toString()), parseInt(input.upper.toString())]
+      }));
     }
   };
 
@@ -44950,7 +44956,16 @@ var MainEditor = function MainEditor(_a) {
     labelWidth: 10,
     inputWidth: 40,
     type: "number",
-    value: input,
+    name: "under",
+    value: input.under,
+    onChange: handleChange
+  }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["FormField"], {
+    label: "Upper Threshold",
+    labelWidth: 10,
+    inputWidth: 40,
+    type: "number",
+    name: "upper",
+    value: input.upper,
     onChange: handleChange
   }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
     className: "btn btn-primary",
@@ -45023,9 +45038,9 @@ function (_super) {
     };
 
     _this.onSlider = function (value) {
-      _this.props.onOptionsChange({
+      _this.props.onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.props.options), {
         threshold: value
-      });
+      }));
     };
 
     return _this;
@@ -45104,7 +45119,8 @@ function (_super) {
   MainPanel.prototype.render = function () {
     var _a = this.props,
         width = _a.width,
-        height = _a.height;
+        height = _a.height,
+        domain = _a.options.domain;
     var _b = this.state,
         matrix = _b.matrix,
         keys = _b.keys,
@@ -45123,12 +45139,13 @@ function (_super) {
       }, "No Transitions", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_components_CustomSlider__WEBPACK_IMPORTED_MODULE_5__["CustomSlider"], {
         initialValue: this.props.options.threshold,
         onSliding: this.onSliding,
-        onSlider: this.onSlider
+        onSlider: this.onSlider,
+        domain: domain
       }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
         style: {
           fontWeight: 'bold'
         }
-      }, "Threshold : ", threshold));
+      }, "Threshold : [", threshold.join(), "]"));
     }
 
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -45140,13 +45157,14 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_components_CustomSlider__WEBPACK_IMPORTED_MODULE_5__["CustomSlider"], {
       initialValue: this.props.options.threshold,
       onSliding: this.onSliding,
-      onSlider: this.onSlider
+      onSlider: this.onSlider,
+      domain: domain
     }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
       style: {
         fontWeight: 'bold',
         marginBottom: 5
       }
-    }, "Threshold : ", threshold), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    }, "Threshold : [", threshold.join(), "]"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       style: {
         width: '100%',
         height: height - 45
@@ -45231,8 +45249,7 @@ var sliderStyle = {
   position: 'relative',
   width: '100%',
   touchAction: 'none'
-};
-var domain = [0, 300]; // const defaultValues = [200];
+}; // const domain = [0, 300];
 
 var CustomSlider =
 /** @class */
@@ -45246,7 +45263,7 @@ function (_super) {
       _this.setState({
         update: update
       }, function () {
-        _this.props.onSliding(update[0] || 0);
+        _this.props.onSliding(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(update));
       });
     };
 
@@ -45254,18 +45271,19 @@ function (_super) {
       _this.setState({
         values: values
       }, function () {
-        _this.props.onSlider(values[0] || 0);
+        _this.props.onSlider(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(values));
       });
     };
 
     _this.state = {
-      values: [props.initialValue].slice(),
-      update: [props.initialValue].slice()
+      values: props.initialValue.slice(),
+      update: props.initialValue.slice()
     };
     return _this;
   }
 
   CustomSlider.prototype.render = function () {
+    var domain = this.props.domain;
     var values = this.state.values;
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       style: {
@@ -45274,7 +45292,7 @@ function (_super) {
         width: '90%'
       }
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_compound_slider__WEBPACK_IMPORTED_MODULE_2__["Slider"], {
-      mode: 1,
+      mode: 2,
       step: 1,
       domain: domain,
       rootStyle: sliderStyle,
@@ -45300,7 +45318,8 @@ function (_super) {
         });
       }));
     }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_compound_slider__WEBPACK_IMPORTED_MODULE_2__["Tracks"], {
-      right: false
+      right: false,
+      left: false
     }, function (_a) {
       var tracks = _a.tracks,
           getTrackProps = _a.getTrackProps;
@@ -45510,7 +45529,8 @@ var plugin = new _grafana_ui__WEBPACK_IMPORTED_MODULE_0__["PanelPlugin"](_MainPa
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
 var defaults = {
-  threshold: 0
+  threshold: [0, 300],
+  domain: [0, 300]
 };
 
 /***/ }),
@@ -45568,13 +45588,13 @@ var processData = function processData(data, threshold) {
   var nonEliminateByColObj = {};
 
   for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
-    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) <= threshold) {
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) < threshold[0] || Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) > threshold[1]) {
       eliminateByRow.push(idx_row);
       continue;
     }
 
     for (var idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-      if (matrix[idx_row][idx_col] > threshold && !nonEliminateByColObj[idx_col]) {
+      if (matrix[idx_row][idx_col] >= threshold[0] && matrix[idx_row][idx_col] <= threshold[1] && !nonEliminateByColObj[idx_col]) {
         nonEliminateByColObj[idx_col] = true;
       }
     }

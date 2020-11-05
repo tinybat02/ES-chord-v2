@@ -11,7 +11,7 @@ interface State {
   matrix: Array<Array<number>> | null;
   keys: Array<string> | null;
   is_empty: boolean;
-  threshold: number;
+  threshold: number[];
 }
 
 interface Ribbon {
@@ -84,16 +84,20 @@ export class MainPanel extends PureComponent<Props> {
     }
   }
 
-  onSliding = (value: number) => {
+  onSliding = (value: number[]) => {
     this.setState({ threshold: value });
   };
 
-  onSlider = (value: number) => {
-    this.props.onOptionsChange({ threshold: value });
+  onSlider = (value: number[]) => {
+    this.props.onOptionsChange({ ...this.props.options, threshold: value });
   };
 
   render() {
-    const { width, height } = this.props;
+    const {
+      width,
+      height,
+      options: { domain },
+    } = this.props;
     const { matrix, keys, is_empty, threshold } = this.state;
 
     if (!matrix || !keys) {
@@ -108,8 +112,9 @@ export class MainPanel extends PureComponent<Props> {
             initialValue={this.props.options.threshold}
             onSliding={this.onSliding}
             onSlider={this.onSlider}
+            domain={domain}
           />
-          <span style={{ fontWeight: 'bold' }}>Threshold : {threshold}</span>
+          <span style={{ fontWeight: 'bold' }}>Threshold : [{threshold.join()}]</span>
         </div>
       );
     }
@@ -122,8 +127,13 @@ export class MainPanel extends PureComponent<Props> {
           textAlign: 'center',
         }}
       >
-        <CustomSlider initialValue={this.props.options.threshold} onSliding={this.onSliding} onSlider={this.onSlider} />
-        <span style={{ fontWeight: 'bold', marginBottom: 5 }}>Threshold : {threshold}</span>
+        <CustomSlider
+          initialValue={this.props.options.threshold}
+          onSliding={this.onSliding}
+          onSlider={this.onSlider}
+          domain={domain}
+        />
+        <span style={{ fontWeight: 'bold', marginBottom: 5 }}>Threshold : [{threshold.join()}]</span>
         <div style={{ width: '100%', height: height - 45 }}>
           <ResponsiveChord
             matrix={matrix}

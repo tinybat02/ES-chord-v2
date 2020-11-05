@@ -6,22 +6,32 @@ import { PanelEditorProps } from '@grafana/data';
 import { PanelOptions } from './types';
 
 export const MainEditor: React.FC<PanelEditorProps<PanelOptions>> = ({ options, onOptionsChange }) => {
-  const [input, setInput] = useState(options.threshold || '');
+  const [input, setInput] = useState({
+    under: options.domain[0],
+    upper: options.domain[1],
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value == '') {
-      setInput('');
+      setInput({ ...input, [e.target.name]: '' });
     } else if (parseInt(e.target.value) >= 0) {
-      setInput(e.target.value);
+      setInput({ ...input, [e.target.name]: e.target.value });
     }
   };
 
   const handleSubmit = () => {
-    let value = input as string;
-    if (value == '' || isNaN(parseInt(value))) {
-      setInput(0);
+    if (
+      input.under.toString() == '' ||
+      isNaN(parseInt(input.under.toString())) ||
+      input.upper.toString() == '' ||
+      isNaN(parseInt(input.upper.toString()))
+    ) {
+      setInput({
+        under: options.domain[0],
+        upper: options.domain[1],
+      });
     } else {
-      onOptionsChange({ threshold: parseInt(value) });
+      onOptionsChange({ ...options, domain: [parseInt(input.under.toString()), parseInt(input.upper.toString())] });
     }
   };
 
@@ -34,7 +44,17 @@ export const MainEditor: React.FC<PanelEditorProps<PanelOptions>> = ({ options, 
             labelWidth={10}
             inputWidth={40}
             type="number"
-            value={input}
+            name="under"
+            value={input.under}
+            onChange={handleChange}
+          />
+          <FormField
+            label="Upper Threshold"
+            labelWidth={10}
+            inputWidth={40}
+            type="number"
+            name="upper"
+            value={input.upper}
             onChange={handleChange}
           />
         </div>

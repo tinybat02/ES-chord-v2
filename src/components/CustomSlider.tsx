@@ -8,9 +8,10 @@ const sliderStyle: React.CSSProperties = {
   touchAction: 'none',
 };
 interface ISliderProps {
-  onSlider: (value: number) => void;
-  onSliding: (value: number) => void;
-  initialValue: number;
+  onSlider: (value: number[]) => void;
+  onSliding: (value: number[]) => void;
+  initialValue: number[];
+  domain: number[];
 }
 
 interface IState {
@@ -18,36 +19,36 @@ interface IState {
   update: readonly number[];
 }
 
-const domain = [0, 300];
-// const defaultValues = [200];
+// const domain = [0, 300];
 
 export class CustomSlider extends Component<ISliderProps, IState> {
   constructor(props: ISliderProps) {
     super(props);
     this.state = {
-      values: [props.initialValue].slice(),
-      update: [props.initialValue].slice(),
+      values: props.initialValue.slice(),
+      update: props.initialValue.slice(),
     };
   }
 
   onUpdate = (update: ReadonlyArray<number>) => {
     this.setState({ update }, () => {
-      this.props.onSliding(update[0] || 0);
+      this.props.onSliding([...update]);
     });
   };
 
   onChange = (values: ReadonlyArray<number>) => {
     this.setState({ values }, () => {
-      this.props.onSlider(values[0] || 0);
+      this.props.onSlider([...values]);
     });
   };
   render() {
+    const { domain } = this.props;
     const { values } = this.state;
 
     return (
       <div style={{ margin: '5px auto', height: 30, width: '90%' }}>
         <Slider
-          mode={1}
+          mode={2}
           step={1}
           domain={domain}
           rootStyle={sliderStyle}
@@ -65,7 +66,7 @@ export class CustomSlider extends Component<ISliderProps, IState> {
               </div>
             )}
           </Handles>
-          <Tracks right={false}>
+          <Tracks right={false} left={false}>
             {({ tracks, getTrackProps }) => (
               <div className="slider-tracks">
                 {tracks.map(({ id, source, target }) => (

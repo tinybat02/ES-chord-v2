@@ -1,11 +1,13 @@
 import { Vector as VectorData } from '@grafana/data';
 
 export interface PanelOptions {
-  threshold: number;
+  threshold: number[];
+  domain: number[];
 }
 
 export const defaults: PanelOptions = {
-  threshold: 0,
+  threshold: [0, 300],
+  domain: [0, 300],
 };
 
 export interface SingleElement {
