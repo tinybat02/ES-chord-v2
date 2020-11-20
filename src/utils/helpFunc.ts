@@ -1,14 +1,5 @@
 import { SingleElement } from '../types';
 
-// const is_empty_matrix = (matrix: number[][]) => {
-//   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
-//     for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-//       if (matrix[idx_row][idx_col] > 0) return false;
-//     }
-//   }
-//   return true;
-// };
-
 export const processData = (data: SingleElement[], threshold: number[]) => {
   if (data.length == 0) {
     return { matrix: null, keys: null };
@@ -31,39 +22,49 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
   });
 
   const eliminateByRow: number[] = [];
-  const nonEliminateByColObj: { [key: number]: boolean } = {};
 
   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
-    if (Math.max(...matrix[idx_row]) < threshold[0] || Math.max(...matrix[idx_row]) > threshold[1]) {
+    if (Math.max(...matrix[idx_row]) < threshold[0]) {
       eliminateByRow.push(idx_row);
       continue;
     }
-    for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-      if (
-        matrix[idx_row][idx_col] >= threshold[0] &&
-        matrix[idx_row][idx_col] <= threshold[1] &&
-        !nonEliminateByColObj[idx_col]
-      ) {
-        nonEliminateByColObj[idx_col] = true;
+
+    if (Math.max(...matrix[idx_row]) > threshold[1]) {
+      const clone_row = matrix[idx_row].slice(0);
+      clone_row.sort((a, b) => b - a);
+      let shouldRemove = true;
+      for (let iter = 1; iter < clone_row.length; iter++) {
+        if (clone_row[iter] >= threshold[0] && clone_row[iter] <= threshold[1]) {
+          shouldRemove = false;
+          clone_row.splice(iter);
+          break;
+        }
+      }
+
+      if (!shouldRemove) {
+        clone_row.map(item => {
+          const clear_idx = matrix[idx_row].indexOf(item);
+          matrix[idx_row][clear_idx] = 0;
+        });
+      } else {
+        eliminateByRow.push(idx_row);
       }
     }
   }
 
-  const nonELiminateArray = Object.keys(nonEliminateByColObj).map(Number);
-  const eliminateArray = eliminateByRow.filter(value => !nonELiminateArray.includes(value));
-  eliminateArray.sort((a, b) => b - a);
-  eliminateArray.map(elm => {
+  eliminateByRow.sort((a, b) => b - a);
+  eliminateByRow.map(elm => {
     storesList.splice(elm, 1);
     matrix.splice(elm, 1);
   });
 
   for (let row = 0; row < matrix.length; row++) {
-    eliminateArray.map(elm => {
+    eliminateByRow.map(elm => {
       matrix[row].splice(elm, 1);
     });
   }
 
-  const is_empty = matrix.length == 0;
+  const is_empty = matrix.length <= 1;
 
   return { matrix, keys: storesList, is_empty };
 };

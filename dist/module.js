@@ -45546,14 +45546,6 @@ var defaults = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processData", function() { return processData; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
- // const is_empty_matrix = (matrix: number[][]) => {
-//   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
-//     for (let idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-//       if (matrix[idx_row][idx_col] > 0) return false;
-//     }
-//   }
-//   return true;
-// };
 
 var processData = function processData(data, threshold) {
   if (data.length == 0) {
@@ -45585,44 +45577,62 @@ var processData = function processData(data, threshold) {
     });
   });
   var eliminateByRow = [];
-  var nonEliminateByColObj = {};
 
-  for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
-    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) < threshold[0] || Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) > threshold[1]) {
+  var _loop_1 = function _loop_1(idx_row) {
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) < threshold[0]) {
       eliminateByRow.push(idx_row);
-      continue;
+      return "continue";
     }
 
-    for (var idx_col = 0; idx_col < matrix[idx_row].length; idx_col++) {
-      if (matrix[idx_row][idx_col] >= threshold[0] && matrix[idx_row][idx_col] <= threshold[1] && !nonEliminateByColObj[idx_col]) {
-        nonEliminateByColObj[idx_col] = true;
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) > threshold[1]) {
+      var clone_row = matrix[idx_row].slice(0);
+      clone_row.sort(function (a, b) {
+        return b - a;
+      });
+      var shouldRemove = true;
+
+      for (var iter = 1; iter < clone_row.length; iter++) {
+        if (clone_row[iter] >= threshold[0] && clone_row[iter] <= threshold[1]) {
+          shouldRemove = false;
+          clone_row.splice(iter);
+          break;
+        }
+      }
+
+      if (!shouldRemove) {
+        clone_row.map(function (item) {
+          var clear_idx = matrix[idx_row].indexOf(item);
+          matrix[idx_row][clear_idx] = 0;
+        });
+      } else {
+        eliminateByRow.push(idx_row);
       }
     }
+  };
+
+  for (var idx_row = 0; idx_row < matrix.length; idx_row++) {
+    _loop_1(idx_row);
   }
 
-  var nonELiminateArray = Object.keys(nonEliminateByColObj).map(Number);
-  var eliminateArray = eliminateByRow.filter(function (value) {
-    return !nonELiminateArray.includes(value);
-  });
-  eliminateArray.sort(function (a, b) {
+  eliminateByRow.sort(function (a, b) {
     return b - a;
   });
-  eliminateArray.map(function (elm) {
+  eliminateByRow.map(function (elm) {
     storesList.splice(elm, 1);
     matrix.splice(elm, 1);
   });
 
-  var _loop_1 = function _loop_1(row) {
-    eliminateArray.map(function (elm) {
+  var _loop_2 = function _loop_2(row) {
+    eliminateByRow.map(function (elm) {
       matrix[row].splice(elm, 1);
     });
   };
 
   for (var row = 0; row < matrix.length; row++) {
-    _loop_1(row);
+    _loop_2(row);
   }
 
-  var is_empty = matrix.length == 0;
+  var is_empty = matrix.length <= 1;
   return {
     matrix: matrix,
     keys: storesList,
