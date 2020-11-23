@@ -45136,7 +45136,7 @@ function (_super) {
         style: {
           textAlign: 'center'
         }
-      }, "No Transitions", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_components_CustomSlider__WEBPACK_IMPORTED_MODULE_5__["CustomSlider"], {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_components_CustomSlider__WEBPACK_IMPORTED_MODULE_5__["CustomSlider"], {
         initialValue: this.props.options.threshold,
         onSliding: this.onSliding,
         onSlider: this.onSlider,
@@ -45145,7 +45145,7 @@ function (_super) {
         style: {
           fontWeight: 'bold'
         }
-      }, "Threshold : [", threshold.join(), "]"));
+      }, "Threshold : [", threshold.join(), "]"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "No Transitions"));
     }
 
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -45547,6 +45547,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processData", function() { return processData; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 
+
+var isNotransitions = function isNotransitions(matrix) {
+  if (matrix.length <= 1) return true;
+  var noTransition = true;
+
+  for (var i = 0; i < matrix.length; i++) {
+    if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[i])) > 0) {
+      noTransition = false;
+      break;
+    }
+  }
+
+  return noTransition;
+};
+
 var processData = function processData(data, threshold) {
   if (data.length == 0) {
     return {
@@ -45630,9 +45645,10 @@ var processData = function processData(data, threshold) {
 
   for (var row = 0; row < matrix.length; row++) {
     _loop_2(row);
-  }
+  } // const is_empty = matrix.length <= 1;
 
-  var is_empty = matrix.length <= 1;
+
+  var is_empty = isNotransitions(matrix);
   return {
     matrix: matrix,
     keys: storesList,

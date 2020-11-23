@@ -107,7 +107,6 @@ export class MainPanel extends PureComponent<Props> {
     if (matrix && is_empty) {
       return (
         <div style={{ textAlign: 'center' }}>
-          No Transitions
           <CustomSlider
             initialValue={this.props.options.threshold}
             onSliding={this.onSliding}
@@ -115,6 +114,7 @@ export class MainPanel extends PureComponent<Props> {
             domain={domain}
           />
           <span style={{ fontWeight: 'bold' }}>Threshold : [{threshold.join()}]</span>
+          <div>No Transitions</div>
         </div>
       );
     }

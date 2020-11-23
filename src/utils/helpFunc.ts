@@ -1,5 +1,18 @@
 import { SingleElement } from '../types';
 
+const isNotransitions = (matrix: number[][]) => {
+  if (matrix.length <= 1) return true;
+
+  let noTransition = true;
+  for (let i = 0; i < matrix.length; i++) {
+    if (Math.max(...matrix[i]) > 0) {
+      noTransition = false;
+      break;
+    }
+  }
+  return noTransition;
+};
+
 export const processData = (data: SingleElement[], threshold: number[]) => {
   if (data.length == 0) {
     return { matrix: null, keys: null };
@@ -64,7 +77,8 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
     });
   }
 
-  const is_empty = matrix.length <= 1;
+  // const is_empty = matrix.length <= 1;
+  const is_empty = isNotransitions(matrix);
 
   return { matrix, keys: storesList, is_empty };
 };
