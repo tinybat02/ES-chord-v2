@@ -45529,8 +45529,8 @@ var plugin = new _grafana_ui__WEBPACK_IMPORTED_MODULE_0__["PanelPlugin"](_MainPa
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
 var defaults = {
-  threshold: [0, 300],
-  domain: [0, 300]
+  threshold: [0, 100],
+  domain: [0, 100]
 };
 
 /***/ }),
@@ -45591,6 +45591,20 @@ var processData = function processData(data, threshold) {
       }
     });
   });
+  var sum = 0;
+  matrix.map(function (row) {
+    var rowSum = row.reduce(function (total, num) {
+      return total + num;
+    }, 0);
+    sum += rowSum;
+  });
+
+  for (var irow = 0; irow < matrix.length; irow++) {
+    for (var icol = 0; icol < matrix[irow].length; icol++) {
+      matrix[irow][icol] = matrix[irow][icol] / sum * 100;
+    }
+  }
+
   var eliminateByRow = [];
 
   var _loop_1 = function _loop_1(idx_row) {
@@ -45648,7 +45662,19 @@ var processData = function processData(data, threshold) {
   } // const is_empty = matrix.length <= 1;
 
 
-  var is_empty = isNotransitions(matrix);
+  var is_empty = isNotransitions(matrix); // if (!is_empty) {
+  //   let sum = 0;
+  //   matrix.map(row => {
+  //     const rowSum = row.reduce((total, num) => total + num, 0);
+  //     sum += rowSum;
+  //   });
+  //   for (let irow = 0; irow < matrix.length; irow++) {
+  //     for (let icol = 0; icol < matrix[irow].length; icol++) {
+  //       matrix[irow][icol] /= sum;
+  //     }
+  //   }
+  // }
+
   return {
     matrix: matrix,
     keys: storesList,

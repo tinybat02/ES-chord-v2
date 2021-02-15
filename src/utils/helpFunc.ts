@@ -22,7 +22,6 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
 
   const indexStore: { [key: string]: number } = {};
   storesList.map(store => (indexStore[store] = storesList.indexOf(store)));
-
   const matrix: number[][] = [...Array(storesList.length)].map(e => Array(storesList.length).fill(0));
 
   data.map(elm => {
@@ -33,6 +32,18 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
       }
     });
   });
+
+  let sum = 0;
+  matrix.map(row => {
+    const rowSum = row.reduce((total, num) => total + num, 0);
+    sum += rowSum;
+  });
+
+  for (let irow = 0; irow < matrix.length; irow++) {
+    for (let icol = 0; icol < matrix[irow].length; icol++) {
+      matrix[irow][icol] = (matrix[irow][icol] / sum) * 100;
+    }
+  }
 
   const eliminateByRow: number[] = [];
 
@@ -79,6 +90,20 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
 
   // const is_empty = matrix.length <= 1;
   const is_empty = isNotransitions(matrix);
+
+  // if (!is_empty) {
+  //   let sum = 0;
+  //   matrix.map(row => {
+  //     const rowSum = row.reduce((total, num) => total + num, 0);
+  //     sum += rowSum;
+  //   });
+
+  //   for (let irow = 0; irow < matrix.length; irow++) {
+  //     for (let icol = 0; icol < matrix[irow].length; icol++) {
+  //       matrix[irow][icol] /= sum;
+  //     }
+  //   }
+  // }
 
   return { matrix, keys: storesList, is_empty };
 };

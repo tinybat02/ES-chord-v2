@@ -6,8 +6,8 @@ export interface PanelOptions {
 }
 
 export const defaults: PanelOptions = {
-  threshold: [0, 300],
-  domain: [0, 300],
+  threshold: [0, 100],
+  domain: [0, 100],
 };
 
 export interface SingleElement {
