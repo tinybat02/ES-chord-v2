@@ -41,7 +41,7 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
 
   for (let irow = 0; irow < matrix.length; irow++) {
     for (let icol = 0; icol < matrix[irow].length; icol++) {
-      matrix[irow][icol] = (matrix[irow][icol] / sum) * 100;
+      matrix[irow][icol] = Math.round((matrix[irow][icol] / sum) * 100000) / 1000;
     }
   }
 

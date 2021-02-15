@@ -34,13 +34,13 @@ const RibbonTooltip = ({ ribbon }: { ribbon: Ribbon }) => (
         <Chip key="chip" color={ribbon.source.color} />,
         'From ',
         <strong key="id">{ribbon.source.id}</strong>,
-        ribbon.source.value,
+        `${ribbon.source.value} %`,
       ],
       [
         <Chip key="chip" color={ribbon.target.color} />,
         'From ',
         <strong key="id">{ribbon.target.id}</strong>,
-        ribbon.target.value,
+        `${ribbon.target.value} %`,
       ],
     ]}
   />
