@@ -46,11 +46,13 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
   }
 
   const eliminateByRow: number[] = [];
+  const nonEliminate: number[] = [];
 
   for (let idx_row = 0; idx_row < matrix.length; idx_row++) {
+    let finalRemove = false;
     if (Math.max(...matrix[idx_row]) < threshold[0]) {
       eliminateByRow.push(idx_row);
-      continue;
+      finalRemove = true;
     }
 
     if (Math.max(...matrix[idx_row]) > threshold[1]) {
@@ -72,38 +74,35 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
         });
       } else {
         eliminateByRow.push(idx_row);
+        finalRemove = true;
       }
+    }
+
+    if (finalRemove) {
+      for (let i = 0; i < matrix[idx_row].length; i++) {
+        matrix[idx_row][i] = 0;
+      }
+    } else {
+      const indexOfMax = matrix[idx_row].reduce((iMax, x, i, arr) => (x > arr[iMax] ? i : iMax), 0);
+      if (!nonEliminate.includes(indexOfMax)) nonEliminate.push(indexOfMax);
     }
   }
 
-  eliminateByRow.sort((a, b) => b - a);
-  eliminateByRow.map(elm => {
+  const finalEliminate = eliminateByRow.filter(value => !nonEliminate.includes(value));
+
+  finalEliminate.sort((a, b) => b - a);
+  finalEliminate.map(elm => {
     storesList.splice(elm, 1);
     matrix.splice(elm, 1);
   });
 
   for (let row = 0; row < matrix.length; row++) {
-    eliminateByRow.map(elm => {
+    finalEliminate.map(elm => {
       matrix[row].splice(elm, 1);
     });
   }
 
-  // const is_empty = matrix.length <= 1;
   const is_empty = isNotransitions(matrix);
-
-  // if (!is_empty) {
-  //   let sum = 0;
-  //   matrix.map(row => {
-  //     const rowSum = row.reduce((total, num) => total + num, 0);
-  //     sum += rowSum;
-  //   });
-
-  //   for (let irow = 0; irow < matrix.length; irow++) {
-  //     for (let icol = 0; icol < matrix[irow].length; icol++) {
-  //       matrix[irow][icol] /= sum;
-  //     }
-  //   }
-  // }
 
   return { matrix, keys: storesList, is_empty };
 };

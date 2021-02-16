@@ -45606,11 +45606,14 @@ var processData = function processData(data, threshold) {
   }
 
   var eliminateByRow = [];
+  var nonEliminate = [];
 
   var _loop_1 = function _loop_1(idx_row) {
+    var finalRemove = false;
+
     if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) < threshold[0]) {
       eliminateByRow.push(idx_row);
-      return "continue";
+      finalRemove = true;
     }
 
     if (Math.max.apply(Math, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(matrix[idx_row])) > threshold[1]) {
@@ -45635,7 +45638,19 @@ var processData = function processData(data, threshold) {
         });
       } else {
         eliminateByRow.push(idx_row);
+        finalRemove = true;
       }
+    }
+
+    if (finalRemove) {
+      for (var i = 0; i < matrix[idx_row].length; i++) {
+        matrix[idx_row][i] = 0;
+      }
+    } else {
+      var indexOfMax = matrix[idx_row].reduce(function (iMax, x, i, arr) {
+        return x > arr[iMax] ? i : iMax;
+      }, 0);
+      if (!nonEliminate.includes(indexOfMax)) nonEliminate.push(indexOfMax);
     }
   };
 
@@ -45643,38 +45658,28 @@ var processData = function processData(data, threshold) {
     _loop_1(idx_row);
   }
 
-  eliminateByRow.sort(function (a, b) {
+  var finalEliminate = eliminateByRow.filter(function (value) {
+    return !nonEliminate.includes(value);
+  });
+  finalEliminate.sort(function (a, b) {
     return b - a;
   });
-  eliminateByRow.map(function (elm) {
+  finalEliminate.map(function (elm) {
     storesList.splice(elm, 1);
     matrix.splice(elm, 1);
   });
 
   var _loop_2 = function _loop_2(row) {
-    eliminateByRow.map(function (elm) {
+    finalEliminate.map(function (elm) {
       matrix[row].splice(elm, 1);
     });
   };
 
   for (var row = 0; row < matrix.length; row++) {
     _loop_2(row);
-  } // const is_empty = matrix.length <= 1;
+  }
 
-
-  var is_empty = isNotransitions(matrix); // if (!is_empty) {
-  //   let sum = 0;
-  //   matrix.map(row => {
-  //     const rowSum = row.reduce((total, num) => total + num, 0);
-  //     sum += rowSum;
-  //   });
-  //   for (let irow = 0; irow < matrix.length; irow++) {
-  //     for (let icol = 0; icol < matrix[irow].length; icol++) {
-  //       matrix[irow][icol] /= sum;
-  //     }
-  //   }
-  // }
-
+  var is_empty = isNotransitions(matrix);
   return {
     matrix: matrix,
     keys: storesList,
