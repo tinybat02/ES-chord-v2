@@ -45590,20 +45590,16 @@ var processData = function processData(data, threshold) {
         matrix[row][indexStore[store]] += elm[store];
       }
     });
-  });
-  var sum = 0;
-  matrix.map(function (row) {
-    var rowSum = row.reduce(function (total, num) {
-      return total + num;
-    }, 0);
-    sum += rowSum;
-  });
-
-  for (var irow = 0; irow < matrix.length; irow++) {
-    for (var icol = 0; icol < matrix[irow].length; icol++) {
-      matrix[irow][icol] = Math.round(matrix[irow][icol] / sum * 100000) / 1000;
-    }
-  }
+  }); // let sum = 0;
+  // matrix.map(row => {
+  //   const rowSum = row.reduce((total, num) => total + num, 0);
+  //   sum += rowSum;
+  // });
+  // for (let irow = 0; irow < matrix.length; irow++) {
+  //   for (let icol = 0; icol < matrix[irow].length; icol++) {
+  //     matrix[irow][icol] = Math.round((matrix[irow][icol] / sum) * 100000) / 1000;
+  //   }
+  // }
 
   var eliminateByRow = [];
   var nonEliminate = [];

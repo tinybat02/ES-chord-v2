@@ -33,17 +33,17 @@ export const processData = (data: SingleElement[], threshold: number[]) => {
     });
   });
 
-  let sum = 0;
-  matrix.map(row => {
-    const rowSum = row.reduce((total, num) => total + num, 0);
-    sum += rowSum;
-  });
+  // let sum = 0;
+  // matrix.map(row => {
+  //   const rowSum = row.reduce((total, num) => total + num, 0);
+  //   sum += rowSum;
+  // });
 
-  for (let irow = 0; irow < matrix.length; irow++) {
-    for (let icol = 0; icol < matrix[irow].length; icol++) {
-      matrix[irow][icol] = Math.round((matrix[irow][icol] / sum) * 100000) / 1000;
-    }
-  }
+  // for (let irow = 0; irow < matrix.length; irow++) {
+  //   for (let icol = 0; icol < matrix[irow].length; icol++) {
+  //     matrix[irow][icol] = Math.round((matrix[irow][icol] / sum) * 100000) / 1000;
+  //   }
+  // }
 
   const eliminateByRow: number[] = [];
   const nonEliminate: number[] = [];
