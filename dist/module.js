@@ -45007,12 +45007,12 @@ var RibbonTooltip = function RibbonTooltip(_a) {
       color: ribbon.source.color
     }), 'From ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
       key: "id"
-    }, ribbon.source.id), ribbon.source.value + " %"], [react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_tooltip__WEBPACK_IMPORTED_MODULE_3__["Chip"], {
+    }, ribbon.source.id), "" + ribbon.source.value], [react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_nivo_tooltip__WEBPACK_IMPORTED_MODULE_3__["Chip"], {
       key: "chip",
       color: ribbon.target.color
     }), 'From ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("strong", {
       key: "id"
-    }, ribbon.target.id), ribbon.target.value + " %"]]
+    }, ribbon.target.id), "" + ribbon.target.value]]
   });
 };
 
